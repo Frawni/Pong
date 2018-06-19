@@ -11,7 +11,7 @@ private:
   Ball ball;
   bool left_board;              //signals the ball leaving the board
 public:
-  Board() : length(20), height(10), ball(), player1(1), player2(18), left_board(false) {
+  Board() : length(20), height(10), player1(1), player2(18), ball(), left_board(false) {
     initscr(); cbreak(); keypad(stdscr, true); draw();}
   void input(){                  //input part
     int key = getch();
@@ -25,11 +25,11 @@ public:
   void update() {            //logic part
     switch (ball.getX()) {
       case 1: {
-        if (ball.getY() <= player1.getY() <= ball.getY()+2) ball.paddleBounce(player1.getY());
+        if (ball.getY() <= player1.getY() && player1.getY() <= ball.getY()+2) ball.paddleBounce(player1.getY());
         else {left_board = true;} break;
       }
       case 18: {
-        if (ball.getY() < player2.getY() < ball.getY()+2) ball.paddleBounce(player2.getY());
+        if (ball.getY() <= player2.getY() && player2.getY() <= ball.getY()+2) ball.paddleBounce(player2.getY());
         else {left_board = true;} break;
       }
     }
@@ -42,7 +42,7 @@ public:
   void draw() {                  //UI part
     erase();
     mvaddch(ball.getX(), ball.getY(), 'o');
-    for (unsigned i=0; i<3; ++i){
+    for (int i=0; i<3; ++i){
       mvaddch(player1.getX(), player1.getY()+i, '-');
       mvaddch(player2.getX(), player2.getY()+i, '-');
     }
