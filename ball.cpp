@@ -20,7 +20,10 @@ public:
   int getDirection(){return direction;}
   bool isBouncing(){return bouncing;}
   void update(){
-    if (bouncing) bouncing=false;         //passes for a timeframe to bounce on surface
+    if (bouncing) {
+      std::cout << bouncing << std::endl;
+      bouncing = false;         //passes for a timeframe to bounce on surface
+    }
     else {
       switch(direction){
         case RIGHT: ++x; break;
@@ -29,7 +32,7 @@ public:
         case DOWNRIGHT: ++x; --y; break;
         case DOWNLEFT: --x; --y; break;
         case LEFT: --x; break;
-        default: std::cout << "Wrong direction code" << std::endl;
+        // default: std::cout << "Wrong direction code" << std::endl;
       }
     }
   }

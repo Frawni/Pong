@@ -12,7 +12,7 @@ private:
   bool left_board;              //signals the ball leaving the board
 public:
   Board() : length(20), height(10), ball(), player1(1), player2(18), left_board(false) {
-    initscr(); cbreak(); noecho(); keypad(stdscr, true); draw();}
+    initscr(); cbreak(); keypad(stdscr, true); draw();}
   void input(){                  //input part
     int key = getch();
     switch (key) {
@@ -20,10 +20,9 @@ public:
       case KEY_DOWN: player2.moveDown(); break;
       case 'z': player1.moveUp(); break;
       case 's': player1.moveDown(); break;
-      default: std::cout << "Wrong key" << std::endl;
     }
   }
-  void ballUpdate() {            //logic part
+  void update() {            //logic part
     switch (ball.getX()) {
       case 1: {
         if (ball.getY() <= player1.getY() <= ball.getY()+2) ball.paddleBounce(player1.getY());
@@ -33,12 +32,10 @@ public:
         if (ball.getY() < player2.getY() < ball.getY()+2) ball.paddleBounce(player2.getY());
         else {left_board = true;} break;
       }
-      // default: std::cout << "still moving to the side" << std::endl;
     }
     switch (ball.getY()) {
       case 0: ball.wallBounce(); break;
       case 9: ball.wallBounce(); break;
-      // default: std::cout << "still moving up and down" << std::endl;
     }
     ball.update();
   }
@@ -52,7 +49,7 @@ public:
   }
   // void restartGame() {};
   void runGame() {
-    while (!left_board) { input(); ballUpdate(); draw();}
+    while (!left_board) { input(); update(); draw();}
     // restartGame();
     endwin(); refresh();
   }
