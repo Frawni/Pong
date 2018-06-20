@@ -51,6 +51,6 @@ public:
   void runGame() {
     while (!left_board) { input(); update(); draw();}
     // restartGame();
-    endwin(); refresh();
+    endwin();
   }
 };
