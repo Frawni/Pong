@@ -41,16 +41,29 @@ class Paddle(object):
         pygame.draw.rect(screen, self.colour, self.rect)
 
     def update(self):
-        self.y += self.y_change
+
+        if self.y < 0:
+            self.y = 0
+        elif (self.y + self.height) > self.screen_height:
+            self.y = self.screen_height - self.height
+        else:
+            self.y += self.y_change
 
     def key_handler(self, event):               # to be changed
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP and self.y > 0:
-                self.y_change = -self.speed
-            elif event.key == pygame.K_DOWN and (self.y + self.height) < self.screen_height:
-                self.y_change = self.speed
-        elif event.key in (pygame.K_UP, pygame.K_DOWN):
-                self.y_change = 0
+        if event.value <= -1:                                    # UP
+            self.y_change = -self.speed
+        elif event.value >= 1:                                   # DOWN
+            self.y_change = self.speed
+        else:
+            self.y_change = 0
+
+#        if event.type == pygame.KEYDOWN:
+#            if event.key == pygame.K_UP and self.y > 0:
+#                self.y_change = -self.speed
+#            elif event.key == pygame.K_DOWN and (self.y + self.height) < self.screen_height:
+#                self.y_change = self.speed
+#        elif event.key in (pygame.K_UP, pygame.K_DOWN):
+#                self.y_change = 0
 
     @property
     def rect(self):                             # not important
@@ -63,6 +76,8 @@ class Pong(object):
 
     def __init__(self):
         pygame.init()
+        for _ in range(pygame.joystick.get_count()):
+            pygame.joystick.Joystick(_).init()
         WIDTH, HEIGHT = 200, 100
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))  # not important
         pygame.display.set_caption("Lewis' Pong")               # not important
@@ -70,9 +85,9 @@ class Pong(object):
         ball_y = randint(40, 60)
         self.ball = Ball(ball_x, ball_y, 10, 10, 1, 1, Pong.COLOURS["BLACK"])
         self.player1 = Paddle(10, HEIGHT/2 - 10,  10, (HEIGHT * 30)/HEIGHT,
-                              3, HEIGHT, Pong.COLOURS["BLACK"])
+                              1, HEIGHT, Pong.COLOURS["BLACK"])
         self.player2 = Paddle(WIDTH - 20, HEIGHT/2 - 10,  10, (HEIGHT * 30)/HEIGHT,
-                              3, HEIGHT, Pong.COLOURS["BLACK"])
+                              1, HEIGHT, Pong.COLOURS["BLACK"])
 #        self.score = 0
 
     def play(self):
@@ -83,9 +98,11 @@ class Pong(object):
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-                    self.player1.key_handler(event)
-                    self.player2.key_handler(event)
+                if event.type == pygame.JOYAXISMOTION and event.axis == 1:
+                    if event.joy == 0:
+                        self.player1.key_handler(event)
+                    elif event.joy == 1:
+                        self.player2.key_handler(event)
             self.collision_handler()
             self.draw()
 
