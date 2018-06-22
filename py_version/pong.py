@@ -6,6 +6,34 @@ adapted for two-player game with pihut gamepads (keyboard handling commented out
 Details:
     - (0,0) in upper left corner, x increases rightwards, y increases downwards
     - items marked as 'not important' are in regards to adapting for CM matrix
+
+PiHut Gamepad keys w/ pygame:
+    - Directions cross:
+        * pygame.JOYAXISMOTION
+        * Pressing button:
+            * Up and Down:
+                - event.axis = 1
+                * Up: event.value = -1.0000305...
+                * Down: event.value = 1.0
+            * Left and Right:
+                - event.axis = 0
+                * Left: event.value = -1.0000305...
+                * Right: event.value = 1.0
+        * Releasing button:
+            - event.value = 0
+            - event.axis remains as above
+    - Buttons:
+        * Pressing: pygame.JOYBUTTONDOWN
+        * Releasing: pygame.JOYBUTTONUP
+        - X: event.button = 0
+        - A: event.button = 1
+        - B: event.button = 2
+        - Y: event.button = 3
+        - L: event.button = 4
+        - R: event.button = 5
+        - Select: event.button = 8
+        - Start: event.button = 9
+    (nobody knows what happened to 6 and 7...)
 """
 
 
