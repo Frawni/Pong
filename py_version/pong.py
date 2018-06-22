@@ -70,7 +70,7 @@ class Ball(object):
 
 
 class Paddle(object):
-    def __init__(self, x, y, width, height, speed, screen_height, colour):
+    def __init__(self, x, y, width, height, speed, screen_height, colour, game):
         self.x = x
         self.y = y
         self.width = width                      # not important
@@ -79,6 +79,7 @@ class Paddle(object):
         self.speed = speed
         self.screen_height = screen_height
         self.colour = colour                    # not important
+        self.game = game
 
     def render(self, screen):                   # not important
         pygame.draw.rect(screen, self.colour, self.rect)
@@ -91,13 +92,29 @@ class Paddle(object):
         else:
             self.y += self.y_change
 
-    def key_handler(self, event):
-        if event.value <= -1 and self.y > 0:                                    # UP
-            self.y_change = -self.speed
-        elif event.value >= 1 and (self.y + self.height) < self.screen_height:  # DOWN
-            self.y_change = self.speed
-        else:
-            self.y_change = 0
+    def key_handler(self, event):               # to be changed
+        if event.type == pygame.JOYAXISMOTION:
+            if event.axis == 0:  # RIGHT/LEFT
+                pass
+            elif event.axis == 1:  # UP/DOWN
+                if event.value <= -1 and self.y > 0:                                      # UP
+                    self.y_change = -self.speed
+                elif event.value >= 1 and (self.y + self.height) < self.screen_height:    # DOWN
+                    self.y_change = self.speed
+                else:
+                    self.y_change = 0
+        elif event.type == pygame.JOYBUTTONDOWN:
+            if event.button < 4:  # color button
+                buttons = [(0, 0, 255), (255, 0, 0), (255, 255, 0), (0, 255, 0)]
+                self.colour = buttons[event.button]
+            elif event.button == 4:  # L
+                pass
+            elif event.button == 5:  # R
+                pass
+            elif event.button == 8:  # select
+                pass
+            elif event.button == 9:  # start
+                self.game.pause()
 
         # if event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_UP and self.y > 0:
@@ -128,9 +145,9 @@ class Pong(object):
         ball_y = randint(40, 60)
         self.ball = Ball(ball_x, ball_y, 10, 10, 1, 1, Pong.COLOURS["BLACK"])
         self.player1 = Paddle(10, HEIGHT/2 - 10,  10, (HEIGHT * 30)/HEIGHT,
-                              1, HEIGHT, Pong.COLOURS["BLACK"])
+                              1, HEIGHT, Pong.COLOURS["BLACK"], self)
         self.player2 = Paddle(WIDTH - 20, HEIGHT/2 - 10,  10, (HEIGHT * 30)/HEIGHT,
-                              1, HEIGHT, Pong.COLOURS["BLACK"])
+                              1, HEIGHT, Pong.COLOURS["BLACK"], self)
 #        self.score = 0
 
     def pause(self):
@@ -153,12 +170,18 @@ class Pong(object):
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
-                    self.pause()
-                if event.type == pygame.JOYAXISMOTION and event.axis == 1:
+                if event.type in (pygame.JOYAXISMOTION, pygame.JOYBUTTONDOWN):
                     if event.joy == 0:
                         self.player1.key_handler(event)
-                    # elif event.joy == 1:
+
+                        """
+                        # SOLO MODE
+                        if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
+                            pass  # avoid triggering double pause if I controll both paddles
+                        else:
+                            self.player2.key_handler(event)
+                        """
+                    elif event.joy == 1:
                         self.player2.key_handler(event)
                 # if event.type in (pygame.KEYDOWN, pygame.KEYUP):
                 #    self.player1.key_handler(event)
@@ -168,7 +191,7 @@ class Pong(object):
                     self.ball.accelerate()
             self.collision_handler()
             self.draw()
-
+            
     def collision_handler(self):
         if self.ball.rect.colliderect(self.player1.rect):
             self.ball.x_change = -self.ball.x_change
@@ -186,11 +209,6 @@ class Pong(object):
             self.ball.y_change = -abs(self.ball.y_change)
         elif self.ball.y <= 0:
             self.ball.y_change = abs(self.ball.y_change)
-
-#        if self.player1.y + self.player1.height > self.screen.get_height():
-#            self.player1.y = self.screen.get_height() - self.player1.height
-#        elif self.player1.y < 0:
-#            self.player1.y = 0
 
     def draw(self):
         self.screen.fill(Pong.COLOURS["WHITE"])         # not important
