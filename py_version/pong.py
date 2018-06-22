@@ -112,7 +112,7 @@ class Paddle(object):
             elif event.button == 8:  # select
                 start()
             elif event.button == 9:  # start
-                self.game.pause()
+                self.game.pause(event.joy)
 
         # if event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_UP and self.y > 0:
@@ -148,15 +148,20 @@ class Pong(object):
                               1, HEIGHT, Pong.COLOURS["BLACK"], self)
 #        self.score = 0
 
-    def pause(self):
+    def pause(self, pauser):
         clock = pygame.time.Clock()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-                if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
-                    self.play()
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if event.button == 9 and event.joy == pauser:
+                        self.play()
+                    elif event.joy == 0:
+                        self.player1.key_handler(event)
+                    elif event.joy == 1:
+                        self.player2.key_handler(event)
             pygame.display.update()
             clock.tick(15)
 
