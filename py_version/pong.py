@@ -1,7 +1,7 @@
 """
 Pong game in python, using pygame
 original code taken from: https://codereview.stackexchange.com/questions/33289/basic-pong-game-in-pygame
-adapted for two-player game with pi-joysticks
+adapted for two-player game with pihut gamepads (keyboard handling commented out)
 
 Details:
     - (0,0) in upper left corner, x increases rightwards, y increases downwards
@@ -71,13 +71,13 @@ class Paddle(object):
         else:
             self.y_change = 0
 
-#        if event.type == pygame.KEYDOWN:
-#            if event.key == pygame.K_UP and self.y > 0:
-#                self.y_change = -self.speed
-#            elif event.key == pygame.K_DOWN and (self.y + self.height) < self.screen_height:
-#                self.y_change = self.speed
-#        elif event.key in (pygame.K_UP, pygame.K_DOWN):
-#                self.y_change = 0
+        # if event.type == pygame.KEYDOWN:
+        #     if event.key == pygame.K_UP and self.y > 0:
+        #         self.y_change = -self.speed
+        #     elif event.key == pygame.K_DOWN and (self.y + self.height) < self.screen_height:
+        #         self.y_change = self.speed
+        # elif event.key in (pygame.K_UP, pygame.K_DOWN):
+        #     self.y_change = 0
 
     @property
     def rect(self):                             # not important
@@ -95,6 +95,7 @@ class Pong(object):
         WIDTH, HEIGHT = 200, 100
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))  # not important
         pygame.display.set_caption("Lewis' Adapted Pong")       # not important
+        self.clock = pygame.time.Clock()
         ball_x = randint(80, 120)
         ball_y = randint(40, 60)
         self.ball = Ball(ball_x, ball_y, 10, 10, 1, 1, Pong.COLOURS["BLACK"])
@@ -104,20 +105,36 @@ class Pong(object):
                               1, HEIGHT, Pong.COLOURS["BLACK"])
 #        self.score = 0
 
-    def play(self):
+    def pause(self):
         clock = pygame.time.Clock()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
+                    self.play()
+            pygame.display.update()
+            clock.tick(15)
+
+    def play(self):
         pygame.time.set_timer(1, 5000)
         while True:
-            clock.tick(50)
+            self.clock.tick(50)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
+                    self.pause()
                 if event.type == pygame.JOYAXISMOTION and event.axis == 1:
                     if event.joy == 0:
                         self.player1.key_handler(event)
                     # elif event.joy == 1:
                         self.player2.key_handler(event)
+                # if event.type in (pygame.KEYDOWN, pygame.KEYUP):
+                #    self.player1.key_handler(event)
+                #    self.player2.key_handler(event)
                 if event.type == 1:
                     print("speeding up")
                     self.ball.accelerate()
