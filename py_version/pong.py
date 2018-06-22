@@ -107,12 +107,10 @@ class Paddle(object):
             if event.button < 4:  # color button
                 buttons = [(0, 0, 255), (255, 0, 0), (255, 255, 0), (0, 255, 0)]
                 self.colour = buttons[event.button]
-            elif event.button == 4:  # L
-                pass
-            elif event.button == 5:  # R
-                pass
+            elif event.button < 6:  # L & R
+                self.colour = (0, 0, 0)
             elif event.button == 8:  # select
-                pass
+                start()
             elif event.button == 9:  # start
                 self.game.pause()
 
@@ -174,24 +172,21 @@ class Pong(object):
                     if event.joy == 0:
                         self.player1.key_handler(event)
 
-                        """
-                        # SOLO MODE
                         if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
                             pass  # avoid triggering double pause if I controll both paddles
                         else:
                             self.player2.key_handler(event)
-                        """
-                    elif event.joy == 1:
-                        self.player2.key_handler(event)
+
+                    """elif event.joy == 1:
+                        self.player2.key_handler(event)"""
                 # if event.type in (pygame.KEYDOWN, pygame.KEYUP):
                 #    self.player1.key_handler(event)
                 #    self.player2.key_handler(event)
                 if event.type == 1:
-                    print("speeding up")
                     self.ball.accelerate()
             self.collision_handler()
             self.draw()
-            
+
     def collision_handler(self):
         if self.ball.rect.colliderect(self.player1.rect):
             self.ball.x_change = -self.ball.x_change
@@ -220,5 +215,10 @@ class Pong(object):
         self.player2.render(self.screen)
         pygame.display.update()
 
-if __name__ == "__main__":
+
+def start():
     Pong().play()
+
+
+if __name__ == "__main__":
+    start()
