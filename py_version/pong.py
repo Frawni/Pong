@@ -162,6 +162,10 @@ class Pong(object):
                         self.player1.key_handler(event)
                     elif event.joy == 1:
                         self.player2.key_handler(event)
+            self.player1.update()
+            self.player1.render(self.screen)
+            self.player2.update()
+            self.player2.render(self.screen)
             pygame.display.update()
             clock.tick(15)
 
