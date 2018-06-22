@@ -181,13 +181,14 @@ class Pong(object):
                     if event.joy == 0:
                         self.player1.key_handler(event)
 
+                        """ # SOLO MODE
                         if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
                             pass  # avoid triggering double pause if I controll both paddles
                         else:
-                            self.player2.key_handler(event)
+                            self.player2.key_handler(event)"""
 
-                    """elif event.joy == 1:
-                        self.player2.key_handler(event)"""
+                    elif event.joy == 1:
+                        self.player2.key_handler(event)
                 # if event.type in (pygame.KEYDOWN, pygame.KEYUP):
                 #    self.player1.key_handler(event)
                 #    self.player2.key_handler(event)
