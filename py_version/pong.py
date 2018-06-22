@@ -1,3 +1,14 @@
+"""
+Pong game in python, using pygame
+original code taken from: https://codereview.stackexchange.com/questions/33289/basic-pong-game-in-pygame
+adapted for two-player game with pi-joysticks
+
+Details:
+    - (0,0) in upper left corner, x increases rightwards, y increases downwards
+    - items marked as 'not important' are in regards to adapting for CM matrix
+"""
+
+
 import pygame
 import sys
 import math
@@ -41,7 +52,6 @@ class Paddle(object):
         pygame.draw.rect(screen, self.colour, self.rect)
 
     def update(self):
-
         if self.y < 0:
             self.y = 0
         elif (self.y + self.height) > self.screen_height:
@@ -49,10 +59,10 @@ class Paddle(object):
         else:
             self.y += self.y_change
 
-    def key_handler(self, event):               # to be changed
-        if event.value <= -1:                                    # UP
+    def key_handler(self, event):
+        if event.value <= -1 and self.y > 0:                                    # UP
             self.y_change = -self.speed
-        elif event.value >= 1:                                   # DOWN
+        elif event.value >= 1 and (self.y + self.height) < self.screen_height:  # DOWN
             self.y_change = self.speed
         else:
             self.y_change = 0
@@ -80,7 +90,7 @@ class Pong(object):
             pygame.joystick.Joystick(_).init()
         WIDTH, HEIGHT = 200, 100
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))  # not important
-        pygame.display.set_caption("Lewis' Pong")               # not important
+        pygame.display.set_caption("Lewis' Adapted Pong")       # not important
         ball_x = randint(80, 120)
         ball_y = randint(40, 60)
         self.ball = Ball(ball_x, ball_y, 10, 10, 1, 1, Pong.COLOURS["BLACK"])
@@ -101,7 +111,7 @@ class Pong(object):
                 if event.type == pygame.JOYAXISMOTION and event.axis == 1:
                     if event.joy == 0:
                         self.player1.key_handler(event)
-                    elif event.joy == 1:
+                    # elif event.joy == 1:
                         self.player2.key_handler(event)
             self.collision_handler()
             self.draw()
