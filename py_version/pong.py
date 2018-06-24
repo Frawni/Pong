@@ -135,17 +135,17 @@ class Pong(object):
         pygame.init()
         for _ in range(pygame.joystick.get_count()):
             pygame.joystick.Joystick(_).init()
-        WIDTH, HEIGHT = 200, 100
+        WIDTH, HEIGHT = 20, 10
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))  # not important
         pygame.display.set_caption("Lewis' Adapted Pong")       # not important
         self.clock = pygame.time.Clock()
-        ball_x = randint(80, 120)
-        ball_y = randint(40, 60)
-        self.ball = Ball(ball_x, ball_y, 10, 10, 1, 1, Pong.COLOURS["BLACK"])
-        self.player1 = Paddle(10, HEIGHT/2 - 10,  10, (HEIGHT * 30)/HEIGHT,
-                              1, HEIGHT, Pong.COLOURS["BLACK"], self)
-        self.player2 = Paddle(WIDTH - 20, HEIGHT/2 - 10,  10, (HEIGHT * 30)/HEIGHT,
-                              1, HEIGHT, Pong.COLOURS["BLACK"], self)
+        ball_x = randint(9, 10)
+        ball_y = randint(4, 5)
+        self.ball = Ball(ball_x, ball_y, 1, 1, 1, 1, Pong.COLOURS["BLACK"])
+        self.player1 = Paddle(1, HEIGHT/2 - 1,  1, 3, 1, HEIGHT,
+                              Pong.COLOURS["BLACK"], self)
+        self.player2 = Paddle(WIDTH - 2, HEIGHT/2 - 1,  1, 3, 1, HEIGHT,
+                              Pong.COLOURS["BLACK"], self)
 #        self.score = 0
 
     def pause(self, pauser):
@@ -181,14 +181,14 @@ class Pong(object):
                     if event.joy == 0:
                         self.player1.key_handler(event)
 
-                        """ # SOLO MODE
+                        # SOLO MODE
                         if event.type == pygame.JOYBUTTONDOWN and event.button == 9:
                             pass  # avoid triggering double pause if I controll both paddles
                         else:
-                            self.player2.key_handler(event)"""
+                            self.player2.key_handler(event)
 
-                    elif event.joy == 1:
-                        self.player2.key_handler(event)
+                    """elif event.joy == 1:
+                        self.player2.key_handler(event)"""
                 # if event.type in (pygame.KEYDOWN, pygame.KEYUP):
                 #    self.player1.key_handler(event)
                 #    self.player2.key_handler(event)
